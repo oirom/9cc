@@ -1,5 +1,7 @@
 #include "mcc.h"
 
+Node *code[100];
+
 Node *new_node(NodeKind kind) {
   Node *node = calloc(1, sizeof(Node));
   node->kind = kind;
@@ -26,11 +28,34 @@ Node *add();
 Node *mul();
 Node *unary();
 Node *primary();
+Node *stmt();
+Node *assign();
 
-// expr = equality
-Node *expr() {
-  return equality();
+// stmt       = expr ";"
+Node *stmt() {
+  Node *node = expr();
+  expect(";");
+  return node;
 }
+
+// expr       = assign
+Node *expr() {
+  return assign();
+}
+// assign     = equality ("=" assign)?
+Node *assign() {
+  Node *node = equality();
+
+  if (consume("=")) {
+    node = new_binary(ND_ASSIGN, node, assign());
+  }
+  return node;
+}
+
+// // expr = equality
+// Node *expr() {
+//   return equality();
+// }
 
 // equality = relational ("==" relational | "!=" relational)*
 Node *equality() {
@@ -111,4 +136,12 @@ Node *primary() {
   }
 
   return new_num(expect_number());
+}
+
+void program() {
+  int i = 0;
+  while (!at_eof()) {
+    code[i++] = stmt();
+  }
+  code[i] = NULL;
 }
