@@ -1,8 +1,41 @@
 #include "./mcc.h"
 
+void gen_lval(Node *node) {
+  if (node->kind != ND_LVAR)
+    error("lhs is not a variable");
+
+  printf("  mov rax, rbp\n");
+  printf("  sub rax, %d\n", node->offset);
+  printf("  push rax\n");
+}
+
 void gen(Node *node) {
-  if (node->kind == ND_NUM) {
+  switch (node->kind) {
+  case ND_NUM:
     printf("  push %d\n", node->val);
+    return;
+  case ND_LVAR:
+    gen_lval(node);
+    printf("  pop rax\n");
+    printf("  mov rax, [rax]\n");
+    printf("  push rax\n");
+    return;
+  case ND_ASSIGN:
+    gen_lval(node->lhs);
+    gen(node->rhs);
+
+    // address of node->lhs
+    // value of node->rhs
+
+    printf("  pop rdi\n");  // value of node->rhs
+    printf("  pop rax\n");  // address of node->lhs
+    printf("  mov [rax], rdi\n");
+    printf("  push rdi\n");
+    // a = 10
+    // return b = a + 9;
+
+    // a = 10
+    // b = c = a
     return;
   }
 
@@ -45,6 +78,7 @@ void gen(Node *node) {
     printf("  cmp rax, rdi\n");
     printf("  setle al\n");
     printf("  movzb rax, al\n");
+    // oirom0528 is awesome!
     break;
   }
 

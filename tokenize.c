@@ -35,6 +35,17 @@ bool consume(char *op) {
   return true;
 }
 
+Token *consume_ident() {
+  Token *tmp;
+  if (token->kind != TK_IDENT)
+    return NULL;
+
+  // consume
+  tmp = token;
+  token = token->next;
+  return tmp;
+}
+
 // Ensure that the current token is `op`.
 void expect(char *op) {
   if (token->kind != TK_RESERVED || strlen(op) != token->len ||
@@ -82,7 +93,7 @@ Token *tokenize() {
     if (isspace(*p)) {
       p++;
       continue;
-    } 
+    }
 
     // Multi-letter punctuator
     if (startswith(p, "==") || startswith(p, "!=") ||
@@ -93,7 +104,7 @@ Token *tokenize() {
     }
 
     // Single-letter punctuator
-    if (strchr("+-*/*()<>;", *p)) {
+    if (strchr("+-*/*()<>=;", *p)) {
       cur = new_token(TK_RESERVED, cur, p++, 1);
       continue;
     }

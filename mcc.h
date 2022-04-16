@@ -29,6 +29,7 @@ struct Token {
 void error(char *fmt, ...);
 void error_at(char *loc, char *fmt, ...);
 bool consume(char *op);
+Token *consume_ident();
 void expect(char *op);
 int expect_number();
 bool at_eof();
@@ -58,6 +59,7 @@ typedef enum {
 
 // AST node type
 typedef struct Node Node;
+
 struct Node {
   NodeKind kind; // Node kind
   Node *lhs;     // Left-hand side

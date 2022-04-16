@@ -50,4 +50,17 @@ assert 0 '1>=2;'
 
 assert 3 '1; 2; 3;'
 
+assert 3 'a = 3; a;'
+
+assert 3 'c = 3;a = b = c;a;'
+assert 3 'c = 3;a = b = c;b;'
+
+assert 1 "a = 1; b = 2; a;"
+assert 2 "a = 1; b = 2; b;"
+assert 3 "a = 1; b = 2; c = a + b; c;"
+
+assert 2 "a = 1; a = a + a;"
+assert 2 "a = 1; a = a + a; a;"
+assert 2 "b = 1; a = b + b;"
+
 echo OK
