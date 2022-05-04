@@ -43,6 +43,15 @@ extern Token *token;
 // parse.c
 //
 
+typedef struct LVar LVar;
+
+struct LVar {
+  LVar *next;
+  char *name; // name
+  int len;    // length of name
+  int offset; // offset from RBP
+};
+
 typedef enum {
   ND_ADD,     // +
   ND_SUB,     // -
@@ -54,6 +63,7 @@ typedef enum {
   ND_NE,      // !=
   ND_LT,      // <
   ND_LE,      // <=
+  ND_RETURN,  // "return"
   ND_NUM,     // Integer
 } NodeKind;
 

@@ -2,6 +2,15 @@
 
 Node *code[100];
 
+LVar *locals;
+
+LVar *find_lvar(Token *tok) {
+  for (LVar *var = locals; var; var = var->next)
+    if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
+      return var;
+  return NULL;
+}
+
 Node *new_node(NodeKind kind) {
   Node *node = calloc(1, sizeof(Node));
   node->kind = kind;
@@ -12,6 +21,12 @@ Node *new_binary(NodeKind kind, Node *lhs, Node *rhs) {
   Node *node = new_node(kind);
   node->lhs = lhs;
   node->rhs = rhs;
+  return node;
+}
+
+Node *new_unary(NodeKind kind, Node *expr) {
+  Node *node = new_node(kind);
+  node->lhs = expr;
   return node;
 }
 
@@ -31,18 +46,24 @@ Node *primary();
 Node *stmt();
 Node *assign();
 
-// stmt       = expr ";"
+// stmt = "return" expr ";" | expr ";"
 Node *stmt() {
+  if (consume("return")) {
+    Node *node = new_unary(ND_RETURN, expr());
+    expect(";");
+    return node;
+  }
+
   Node *node = expr();
   expect(";");
   return node;
 }
 
-// expr       = assign
+// expr = assign
 Node *expr() {
   return assign();
 }
-// assign     = equality ("=" assign)?
+// assign = equality ("=" assign)?
 Node *assign() {
   Node *node = equality();
 
@@ -139,7 +160,23 @@ Node *primary() {
   if (tok) {
     Node *node = calloc(1, sizeof(Node));
     node->kind = ND_LVAR;
-    node->offset = (tok->str[0] - 'a' + 1) * 8;
+
+    LVar *lvar = find_lvar(tok);
+    if (lvar) {
+      node->offset = lvar->offset;
+    } else {
+      lvar = calloc(1, sizeof(LVar));
+      lvar->next = locals;
+      lvar->name = tok->str;
+      lvar->len = tok->len;
+      if (locals == NULL) {
+        lvar->offset = 0;
+      } else {
+        lvar->offset = locals->offset + 8;
+      }
+      node->offset = lvar->offset;
+      locals = lvar;
+    }
     return node;
   }
 

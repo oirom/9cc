@@ -63,4 +63,15 @@ assert 2 "a = 1; a = a + a;"
 assert 2 "a = 1; a = a + a; a;"
 assert 2 "b = 1; a = b + b;"
 
+assert 1 "return 1; 2; 3;"
+assert 2 "1; return 2; 3;"
+assert 3 "1; 2; return 3;"
+
+assert 1 "a = 1; return a;"
+assert 3 "a = 1; b = 2; return a + b;"
+
+assert 1 "aaa = 1; return aaa;"
+assert 3 "a = 1; ab = 2; abc = a + ab; return abc;"
+assert 9 "a_5 = 5; A_ = 4; return a_5 + A_;"
+
 echo OK
