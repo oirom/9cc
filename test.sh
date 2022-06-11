@@ -84,4 +84,9 @@ assert 2 "a = 0; if (0) a = 1; else a = 2; return a;"
 assert 1 "a = 0; if (2-1) a = 1; else a = 2; return a;"
 assert 2 "a = 0; if (1-1) a = 1; else a = 2; return a;"
 
+assert 1 "a = 0; if (1) a = 1; else if (0) a = 2; else a = 3; return a;"
+assert 1 "a = 0; if (1) a = 1; else if (1) a = 2; else a = 3; return a;"
+assert 2 "a = 0; if (0) a = 1; else if (1) a = 2; else a = 3; return a;"
+assert 3 "a = 0; if (0) a = 1; else if (0) a = 2; else a = 3; return a;"
+
 echo OK

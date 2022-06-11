@@ -75,6 +75,8 @@ struct Node {
   NodeKind kind; // Node kind
   Node *lhs;     // Left-hand side
   Node *rhs;     // Right-hand side
+  // if (A) B else C;
+  // cond: A, then: B, els: C
   Node *cond;
   Node *then;
   Node *els;
