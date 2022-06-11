@@ -16,16 +16,29 @@ void gen(Node *node) {
   case ND_NUM:
     printf("  push %d\n", node->val);
     return;
-  case ND_IF:
+  case ND_IF: {
+    int seq = labelseq++;
     printf("# %s (%d)\n", __FILE__, __LINE__);
-    gen(node->lhs);
-    printf("  pop rax\n");
-    printf("  cmp rax, 0\n");
-    printf("  je  .Lend%d\n", labelseq);
-    gen(node->rhs);
-    printf(".Lend%d:\n", labelseq);
-    labelseq++;
+    if (node->els) {
+      gen(node->cond);
+      printf("  pop rax\n");
+      printf("  cmp rax, 0\n");
+      printf("  je  .Lelse%d\n", seq);
+      gen(node->then);
+      printf("  jmp .Lend%d\n", seq);
+      printf(".Lelse%d:\n", seq);
+      gen(node->els);
+      printf(".Lend%d:\n", seq);
+    } else {
+      gen(node->cond);
+      printf("  pop rax\n");
+      printf("  cmp rax, 0\n");
+      printf("  je  .Lend%d\n", seq);
+      gen(node->then);
+      printf(".Lend%d:\n", seq);
+    }
     return;
+  }
   case ND_RETURN:
     printf("# %s (%d)\n", __FILE__, __LINE__);
     gen(node->lhs);

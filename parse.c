@@ -53,7 +53,7 @@ Node *assign();
 //          expr ";"
 Node *stmt() {
   if (consume("return")) {
-    printf("# %.*s\n", token->len, token->str);
+    //printf("# %.*s\n", token->len, token->str);
     Node *node = new_unary(ND_RETURN, expr());
     expect(";");
     return node;
@@ -61,13 +61,13 @@ Node *stmt() {
 
   if (consume("if")) {
     // "if" "(" expr ")" expr ";"
+    Node *node = new_node(ND_IF);
     expect("(");
-    Node *lhs = expr();
+    node->cond = expr();
     expect(")");
-    Node *rhs = stmt();
-
-    Node *node = new_binary(ND_IF, lhs, rhs);
-    // expect(";");
+    node->then = stmt();
+    if (consume("else"))
+      node->els = stmt();
     return node;
   }
 

@@ -117,6 +117,12 @@ Token *tokenize() {
       continue;
     }
 
+    if (startswith(p, "else") && !is_alnum(p[4])) {
+      cur = new_token(TK_RESERVED, cur, p, 4);
+      p += 4;
+      continue;
+    }
+
     // Multi-letter punctuator
     if (startswith(p, "==") || startswith(p, "!=") ||
         startswith(p, "<=") || startswith(p, ">=")) {
