@@ -1,4 +1,5 @@
-#include "mcc.h"
+/* Copyright 2021 oirom. All rights reserved. */
+#include "./mcc.h"
 
 char *user_input;
 Token *token;
@@ -19,7 +20,7 @@ void error_at(char *loc, char *fmt, ...) {
 
   int pos = loc - user_input;
   fprintf(stderr, "%s\n", user_input);
-  fprintf(stderr, "%*s", pos, " "); // print pos spaces.
+  fprintf(stderr, "%*s", pos, " ");  // print pos spaces.
   fprintf(stderr, "^ ");
   vfprintf(stderr, fmt, ap);
   fprintf(stderr, "\n");
@@ -57,7 +58,7 @@ void expect(char *op) {
 // Ensure that the current token is TK_NUM.
 int expect_number() {
   if (token->kind != TK_NUM)
-    error_at(token->str,"expected a number");
+    error_at(token->str, "expected a number");
   int val = token->val;
   token = token->next;
   return val;
@@ -86,7 +87,7 @@ bool is_alpha(char c) {
 }
 
 bool is_alnum(char c) {
-  // TODO: Consider using isalnum()?
+  // TODO(oirom): Consider using isalnum()?
   return is_alpha(c) || ('0' <= c && c <= '9');
 }
 
@@ -120,6 +121,12 @@ Token *tokenize() {
     if (startswith(p, "else") && !is_alnum(p[4])) {
       cur = new_token(TK_RESERVED, cur, p, 4);
       p += 4;
+      continue;
+    }
+
+    if (startswith(p, "while") && !is_alnum(p[5])) {
+      cur = new_token(TK_RESERVED, cur, p, 5);
+      p += 5;
       continue;
     }
 

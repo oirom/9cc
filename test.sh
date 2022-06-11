@@ -89,4 +89,9 @@ assert 1 "a = 0; if (1) a = 1; else if (1) a = 2; else a = 3; return a;"
 assert 2 "a = 0; if (0) a = 1; else if (1) a = 2; else a = 3; return a;"
 assert 3 "a = 0; if (0) a = 1; else if (0) a = 2; else a = 3; return a;"
 
+assert 0 "a = 0; while (0) a = a + 1; return a;"
+assert 3 "a = 0; while (a < 3) a = a + 1; return a;"
+assert 10 "a = 10; while(1) return a; return 1;"
+assert 0 "a = 10; while(a) a = a - 1; return a;"
+
 echo OK

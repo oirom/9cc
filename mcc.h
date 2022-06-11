@@ -1,3 +1,6 @@
+/* Copyright 2021 oirom. All rights reserved. */
+#ifndef MCC_H_
+#define MCC_H_
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -19,11 +22,11 @@ typedef enum {
 // Token Type
 typedef struct Token Token;
 struct Token {
-  TokenKind kind; // Token kind
-  Token *next;    // Next token
-  int val;        // If kind is TK_NUM, its value
-  char *str;      // Token string
-  int len;        // Token length
+  TokenKind kind;  // Token kind
+  Token *next;     // Next token
+  int val;         // If kind is TK_NUM, its value
+  char *str;       // Token string
+  int len;         // Token length
 };
 
 void error(char *fmt, ...);
@@ -47,9 +50,9 @@ typedef struct LVar LVar;
 
 struct LVar {
   LVar *next;
-  char *name; // name
-  int len;    // length of name
-  int offset; // offset from RBP
+  char *name;  // name
+  int len;     // length of name
+  int offset;  // offset from RBP
 };
 
 typedef enum {
@@ -64,24 +67,22 @@ typedef enum {
   ND_LT,      // <
   ND_LE,      // <=
   ND_IF,      // "if"
+  ND_WHILE,   // "while"
   ND_RETURN,  // "return"
   ND_NUM,     // Integer
 } NodeKind;
 
 // AST node type
 typedef struct Node Node;
-
 struct Node {
-  NodeKind kind; // Node kind
-  Node *lhs;     // Left-hand side
-  Node *rhs;     // Right-hand side
-  // if (A) B else C;
-  // cond: A, then: B, els: C
+  NodeKind kind;  // Node kind
+  Node *lhs;      // Left-hand side
+  Node *rhs;      // Right-hand side
   Node *cond;
   Node *then;
   Node *els;
-  int val;       // Used if kind == ND_NUM
-  int offset;    // kind
+  int val;        // Used if kind == ND_NUM
+  int offset;     // kind
 };
 
 Node *expr();
@@ -94,3 +95,5 @@ extern Node *code[100];
 
 void codegen(Node *node);
 void program(void);
+
+#endif  // MCC_H_

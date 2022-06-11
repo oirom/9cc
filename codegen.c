@@ -1,3 +1,4 @@
+/* Copyright 2021 oirom. All rights reserved. */
 #include "./mcc.h"
 
 int labelseq = 1;
@@ -30,27 +31,19 @@ void gen(Node *node) {
       gen(node->els);
     }
     printf(".Lend%d:\n", seq);
-    /*
-    if (node->els) {
-      gen(node->cond);
-      printf("  pop rax\n");
-      printf("  cmp rax, 0\n");
-      printf("  je  .Lelse%d\n", seq);
-      gen(node->then);
-      printf("  jmp .Lend%d\n", seq);
-      printf(".Lelse%d:\n", seq);
-      gen(node->els);
-      printf(".Lend%d:\n", seq);
-    } else {
-      gen(node->cond);
-      printf("  pop rax\n");
-      printf("  cmp rax, 0\n");
-      printf("  je  .Lend%d\n", seq);
-      gen(node->then);
-      printf(".Lend%d:\n", seq);
-    }
-    printf(".Lend%d:\n", seq);
-    */
+    return;
+  }
+  case ND_WHILE: {
+    int seq_start = labelseq++;
+    int seq_end = labelseq++;
+    printf(".Lwhile%d:\n", seq_start);
+    gen(node->cond);
+    printf("  pop rax\n");
+    printf("  cmp rax, 0\n");
+    printf("  je  .Lend%d\n", seq_end);
+    gen(node->then);
+    printf("  jmp .Lwhile%d\n", seq_start);
+    printf(".Lend%d:\n", seq_end);
     return;
   }
   case ND_RETURN:
@@ -133,7 +126,5 @@ void gen(Node *node) {
 }
 
 void codegen(Node *node) {
-
   gen(node);
-
 }

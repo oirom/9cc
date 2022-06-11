@@ -1,4 +1,5 @@
-#include "mcc.h"
+/* Copyright 2021 oirom. All rights reserved. */
+#include "./mcc.h"
 
 Node *code[100];
 
@@ -50,17 +51,17 @@ Node *assign();
 
 // stmt =   "return" expr ";" |
 //          "if" "(" expr ")" stmt
+//          "while" "(" expr ")" stmt
 //          expr ";"
 Node *stmt() {
   if (consume("return")) {
-    //printf("# %.*s\n", token->len, token->str);
     Node *node = new_unary(ND_RETURN, expr());
     expect(";");
     return node;
   }
 
   if (consume("if")) {
-    // "if" "(" expr ")" expr ";"
+    // "if" "(" expr ")" stmt
     Node *node = new_node(ND_IF);
     expect("(");
     node->cond = expr();
@@ -68,6 +69,16 @@ Node *stmt() {
     node->then = stmt();
     if (consume("else"))
       node->els = stmt();
+    return node;
+  }
+
+  if (consume("while")) {
+    // "while" "(" expr ")" stmt
+    Node *node = new_node(ND_WHILE);
+    expect("(");
+    node->cond = expr();
+    expect(")");
+    node->then = stmt();
     return node;
   }
 
@@ -99,7 +110,7 @@ Node *assign() {
 Node *equality() {
   Node *node = relational();
 
-  for(;;) {
+  for (;;) {
     if (consume("=="))
       node = new_binary(ND_EQ, node, relational());
     if (consume("!="))
@@ -145,7 +156,7 @@ Node *add() {
 Node *mul() {
   Node *node = unary();
 
-  for(;;) {
+  for (;;) {
     if (consume("*"))
       node = new_binary(ND_MUL, node, unary());
     else if (consume("/"))

@@ -1,4 +1,5 @@
-#include "mcc.h"
+/* Copyright 2021 oirom. All rights reserved. */
+#include "./mcc.h"
 
 int main(int argc, char **argv) {
   if (argc != 2) {
@@ -21,7 +22,7 @@ int main(int argc, char **argv) {
 
   // Traverse the AST to emit assembly.
   // ここでcode[i]に対して全部 codegen(code[i]);
-  for(int i = 0; code[i]; ++i) {
+  for (int i = 0; code[i]; ++i) {
     printf("# %s (%d)\n", __FILE__, __LINE__);
     printf("# codegen(code[%d]) start:\n", i);
     codegen(code[i]);
