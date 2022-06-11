@@ -1,5 +1,7 @@
 #include "./mcc.h"
 
+int labelseq = 1;
+
 void gen_lval(Node *node) {
   if (node->kind != ND_LVAR)
     error("lhs is not a variable");
@@ -14,7 +16,18 @@ void gen(Node *node) {
   case ND_NUM:
     printf("  push %d\n", node->val);
     return;
+  case ND_IF:
+    printf("# %s (%d)\n", __FILE__, __LINE__);
+    gen(node->lhs);
+    printf("  pop rax\n");
+    printf("  cmp rax, 0\n");
+    printf("  je  .Lend%d\n", labelseq);
+    gen(node->rhs);
+    printf(".Lend%d:\n", labelseq);
+    labelseq++;
+    return;
   case ND_RETURN:
+    printf("# %s (%d)\n", __FILE__, __LINE__);
     gen(node->lhs);
     printf("  pop rax\n");
     printf("  mov rsp, rbp\n");

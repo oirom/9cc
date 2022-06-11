@@ -74,4 +74,9 @@ assert 1 "aaa = 1; return aaa;"
 assert 3 "a = 1; ab = 2; abc = a + ab; return abc;"
 assert 9 "a_5 = 5; A_ = 4; return a_5 + A_;"
 
+assert 1 "if (0) a = 0; a = 1; return a;"
+assert 2 "if (1) return 2; return 3;"
+assert 3 "if (0) return 2; return 3;"
+assert 2 "a = 0; if (a=2) return a; return 0;"
+
 echo OK

@@ -16,12 +16,14 @@ int main(int argc, char **argv) {
   printf("main:\n");
 
   printf("  push rbp\n");
-  printf("  mov rbp,  rsp\n");
+  printf("  mov rbp, rsp\n");
   printf("  sub rsp, 208\n");
 
   // Traverse the AST to emit assembly.
   // ここでcode[i]に対して全部 codegen(code[i]);
   for(int i = 0; code[i]; ++i) {
+    printf("# %s (%d)\n", __FILE__, __LINE__);
+    printf("# codegen(code[%d]) start:\n", i);
     codegen(code[i]);
     printf("  pop rax\n");
   }
@@ -29,7 +31,6 @@ int main(int argc, char **argv) {
   // A result must be at the top of the stack, so pop it
   // to RAX to make it a program exit code.
 
-  // printf("  pop rax\n");
   printf("  mov rsp, rbp\n");
   printf("  pop rbp\n");
   printf("  ret\n");

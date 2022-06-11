@@ -46,11 +46,28 @@ Node *primary();
 Node *stmt();
 Node *assign();
 
-// stmt = "return" expr ";" | expr ";"
+// if (0) return 2; return 3;
+
+// stmt =   "return" expr ";" |
+//          "if" "(" expr ")" stmt
+//          expr ";"
 Node *stmt() {
   if (consume("return")) {
+    printf("# %.*s\n", token->len, token->str);
     Node *node = new_unary(ND_RETURN, expr());
     expect(";");
+    return node;
+  }
+
+  if (consume("if")) {
+    // "if" "(" expr ")" expr ";"
+    expect("(");
+    Node *lhs = expr();
+    expect(")");
+    Node *rhs = stmt();
+
+    Node *node = new_binary(ND_IF, lhs, rhs);
+    // expect(";");
     return node;
   }
 
