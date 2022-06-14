@@ -46,6 +46,10 @@ void gen(Node *node) {
     printf(".Lend%d:\n", seq_end);
     return;
   }
+  case ND_BLOCK:
+    for (Node *n = node->body; n; n = n->next)
+      gen(n);
+    return;
   case ND_RETURN:
     printf("# %s (%d)\n", __FILE__, __LINE__);
     gen(node->lhs);

@@ -94,4 +94,19 @@ assert 3 "a = 0; while (a < 3) a = a + 1; return a;"
 assert 10 "a = 10; while(1) return a; return 1;"
 assert 0 "a = 10; while(a) a = a - 1; return a;"
 
+assert 0 "{ a = 0; while (0) { a = a + 1; } return a; }"
+assert 3 "{ a = 0; while (a < 3) { a = a + 1; } return a; }"
+assert 10 "{ a = 10; while(1) { return a; } return 1; }"
+assert 0 "{ a = 10; while(a) { a = a - 1; } return a; }"
+
+assert 2 "{a=0; if (1) {a=a+1; a=a*2;} else {a=a+1; a=a*3;} return a;}"
+assert 3 "{a=0; if (0) {a=a+1; a=a*2;} else {a=a+1; a=a*3;} return a;}"
+assert 10 "{a=0; while (a<10) {a=a+1;} return a;}"
+assert 11 "{a=0; while (a<=10) {a=a+1;} return a;}"
+assert 10 "{a=0; b=0; while (a<10) {a=a+1; b=b+1;} return b;}"
+assert 20 "{a=0; b=0; while (a<10) {a=a+1; b=b+2;} return b;}"
+assert 200 "{a=0; b=0; while (a<100) {a=a+1; b=b+2;} return b;}"
+assert 255 "{a=0; b=1; while (a<8) {a=a+1; b=b*2;} b=b-1; return b;}"
+assert 255 "{a=0; while (a<255) {a=a+1;} return a;}"
+
 echo OK

@@ -47,12 +47,11 @@ Node *primary();
 Node *stmt();
 Node *assign();
 
-// if (0) return 2; return 3;
-
-// stmt =   "return" expr ";" |
-//          "if" "(" expr ")" stmt
-//          "while" "(" expr ")" stmt
-//          expr ";"
+// stmt = "return" expr ";"
+//      | "if" "(" expr ")" stmt
+//      | "while" "(" expr ")" stmt
+//      | "{" stmt* "}"
+//      | expr ";"
 Node *stmt() {
   if (consume("return")) {
     Node *node = new_unary(ND_RETURN, expr());
@@ -79,6 +78,21 @@ Node *stmt() {
     node->cond = expr();
     expect(")");
     node->then = stmt();
+    return node;
+  }
+
+  if (consume("{")) {
+    Node head;
+    head.next = NULL;
+    Node *cur = &head;
+
+    while (!consume("}")) {
+      cur->next = stmt();
+      cur = cur->next;
+    }
+
+    Node *node = new_node(ND_BLOCK);
+    node->body = head.next;
     return node;
   }
 

@@ -68,6 +68,7 @@ typedef enum {
   ND_LE,      // <=
   ND_IF,      // "if"
   ND_WHILE,   // "while"
+  ND_BLOCK,   // "{ ... }"
   ND_RETURN,  // "return"
   ND_NUM,     // Integer
 } NodeKind;
@@ -78,9 +79,13 @@ struct Node {
   NodeKind kind;  // Node kind
   Node *lhs;      // Left-hand side
   Node *rhs;      // Right-hand side
+  // "if" statement
   Node *cond;
   Node *then;
   Node *els;
+  // Block
+  Node *body;
+  Node *next;
   int val;        // Used if kind == ND_NUM
   int offset;     // kind
 };
